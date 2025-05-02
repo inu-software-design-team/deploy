@@ -25,6 +25,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "docker-compose.yml"
           target: "~/app"
+          overwrite: true # 덮어쓰기 허용
 
       # 3. EC2에서 docker-compose 실행
       - name: SSH and run deploy
