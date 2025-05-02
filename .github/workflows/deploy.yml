@@ -1,8 +1,8 @@
 name: Deploy to EC2
 
 on:
-  push:
-    branches: [main]
+  # push:
+  #   branches: [main]
   repository_dispatch:
     types: [deploy_trigger] # 외부에서 전달되는 deploy 이벤트 감지
   workflow_dispatch: # 수동 트리거 실행 허용
