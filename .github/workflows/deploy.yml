@@ -1,10 +1,8 @@
 name: Deploy to EC2
 
-# on:
-#   push:
-#     branches: [main]
-
 on:
+  push:
+    branches: [main]
   repository_dispatch:
     types: [deploy_trigger] # 외부에서 전달되는 deploy 이벤트 감지
   workflow_dispatch: # 수동 트리거 실행 허용
@@ -37,5 +35,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~/app
-            docker compose pull
-            docker compose up -d --remove-orphans
+            docker-compose -p cosy --env-file .env pull
+            docker-compose -p cosy --env-file .env up -d --remove-orphans
