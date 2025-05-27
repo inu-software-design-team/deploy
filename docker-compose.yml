@@ -4,23 +4,25 @@ services:
     container_name: nginx
     ports:
       - "80:80"
-      # - "443:443"  # HTTPS 포트 추가
+      - "443:443" # HTTPS 포트 추가
     volumes:
       - ./infra/nginx/nginx.conf:/etc/nginx/conf.d/default.conf # deploy-repo 기준 경로
-      # - certbot-etc:/etc/letsencrypt        # 인증서 공유
-      # - certbot-var:/var/lib/letsencrypt    # 인증 경로 공
+      - certbot-etc:/etc/letsencrypt # 인증서 공유
+      - certbot-var:/var/lib/letsencrypt # 인증 경로 공유
+      - ./infra/nginx/www:/var/www/certbot # Certbot HTTP-01 챌린지를 위한 경로 (nginx.conf와 맞춰야 함)
     depends_on:
       - frontend
       - backend
     restart: always
 
-  # certbot:
-  #   image: certbot/certbot
-  #   container_name: certbot
-  #   volumes:
-  #     - certbot-etc:/etc/letsencrypt
-  #     - certbot-var:/var/lib/letsencrypt
-  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew; done'"
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - ./infra/nginx/www:/var/www/certbot # Nginx와 공유할 챌린지 파일 경로
+    command: renew --webroot -w /var/www/certbot --quiet
 
   frontend:
     image: rlarltn/cosy_frontend:latest
@@ -46,9 +48,9 @@ services:
       - ./.env
     restart: always
 
-#volumes:
-# certbot-etc:
-# certbot-var:
+volumes:
+  certbot-etc:
+  certbot-var:
 
 networks:
   default:
