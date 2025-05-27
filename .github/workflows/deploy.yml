@@ -36,5 +36,5 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~/app
-            docker-compose -p cosy --env-file .env pull
-            docker-compose -p cosy --env-file .env up -d --remove-orphans
+            sudo docker-compose -p cosy --env-file .env pull
+            sudo docker-compose -p cosy --env-file .env up -d --remove-orphans
